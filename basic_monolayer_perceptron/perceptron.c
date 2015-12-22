@@ -7,9 +7,9 @@
 /*	separables. Robert A. Vazeux 2015	*/
 /************************************************/
 
-#define MAX_ETAPAS	8
-#define MAX_MUESTRAS	4
-
+#define MAX_ETAPAS		10
+#define MAX_MUESTRAS		4
+#define TASA_APRENDIZAJE	10
 /* Estructura del perceptron (neurona de dos entradas) */
 typedef struct {
 
@@ -32,6 +32,7 @@ void init_muestras(muestra_t *);
 void init_perceptron(void);
 void aprender(muestra_t *);
 float sigmoide(float x);
+float transf(float x);
 float error(float a, float b);
 
 perceptron_t neurona;
@@ -73,7 +74,7 @@ void init_perceptron(void) {
 
 	neurona.w0 	= 0;
 	neurona.w1 	= 0;
-	neurona.u	= 1;
+	neurona.u	= 0;
 
 }
 
@@ -84,13 +85,15 @@ void aprender(muestra_t * muestras) {
 	float y;	// Salida
 
 	for(e = 0; e < MAX_ETAPAS; e++) {
+		
+		printf("[ETAPA %d]\n", e+1);
 		for(m = 0; m < MAX_MUESTRAS; m++) {
 			
 			y = sigmoide(muestras[m].x0 * neurona.w0 + muestras[m].x1 * neurona.w1 - neurona.u);
-			neurona.w0 += error(y, muestras[m].s) * muestras[m].x0;
-			neurona.w1 += error(y, muestras[m].s) * muestras[m].x1;
-			
-			printf("[ETAPA %d] [MUESTRA %d] y = %f s = %d \n", e, m, y, muestras[m].s);
+			neurona.w0 += TASA_APRENDIZAJE * error(y, muestras[m].s) * muestras[m].x0;
+			neurona.w1 += TASA_APRENDIZAJE * error(y, muestras[m].s) * muestras[m].x1;
+			neurona.u  += -TASA_APRENDIZAJE * error(y, muestras[m].s);
+			printf("\t[MUESTRA %d] y = %f s = %d \n", m+1, y, muestras[m].s);
 		}
 	}
 
@@ -105,5 +108,6 @@ float sigmoide(float x){
 
 float error(float a, float b) {
 	
-	return (a >= b ? a : b);
+	return (b - a);
 }
+
