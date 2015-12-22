@@ -11,7 +11,7 @@
 #define RAND_MAX 		3276700000	// maximo valor aleatorio
 #define MAX_ETAPAS		100		// numero de etapas de aprendizaje (generacion)
 #define MAX_MUESTRAS		4		// numero de muestras
-#define TASA_APRENDIZAJE	0.1		// velocidad a la que aprende la red 
+#define TASA_APRENDIZAJE	0.6		// velocidad a la que aprende la red 
 
 /* Estructura del perceptron (neurona de dos entradas) */
 typedef struct {
@@ -32,6 +32,7 @@ typedef struct {
 } muestra_t;
 
 void init_muestrasOR(muestra_t *);
+void init_muestrasAND(muestra_t *);
 void init_perceptron(void);
 void aprender(muestra_t *);
 float sigmoide(float x);
@@ -45,7 +46,7 @@ perceptron_t neurona;
 int main() {
 
 	muestra_t muestras[MAX_MUESTRAS];	// set de muestras
-	init_muestrasOR(muestras);		// Inicializa el set de muestras
+	init_muestrasAND(muestras);		// Inicializa el set de muestras
 	init_perceptron();			// Inicializamos la neurona con pesos aleatorios
 	aprender(muestras);
 
@@ -71,6 +72,27 @@ void init_muestrasOR(muestra_t * muestras) {
 	muestras[3].x0	= 1;
 	muestras[3].x1	= 1;
 	muestras[3].s	= muestras[3].x0 | muestras[3].x1;
+
+}
+
+/* Inicializamos las muestras para el caso AND */
+void init_muestrasAND(muestra_t * muestras) {
+
+	muestras[0].x0	= 0;
+	muestras[0].x1	= 0;
+	muestras[0].s	= muestras[0].x0 & muestras[0].x1;	
+
+	muestras[1].x0	= 0;
+	muestras[1].x1	= 1;
+	muestras[1].s	= muestras[1].x0 & muestras[1].x1;
+
+	muestras[2].x0	= 1;
+	muestras[2].x1	= 0;
+	muestras[2].s	= muestras[2].x0 & muestras[2].x1;
+
+	muestras[3].x0	= 1;
+	muestras[3].x1	= 1;
+	muestras[3].s	= muestras[3].x0 & muestras[3].x1;
 
 }
 
